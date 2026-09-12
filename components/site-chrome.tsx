@@ -8,7 +8,6 @@ const links = [
   { href: '/', label: 'Главная' },
   { href: '/finds', label: 'Мои находки' },
   { href: '/request', label: 'Найду для вас' },
-  { href: '/reviews', label: 'Отзывы' },
   { href: '/about', label: 'Обо мне' },
 ];
 

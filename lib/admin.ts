@@ -1,12 +1,8 @@
-import { getChatGPTUser } from '@/app/chatgpt-auth';
+import { hasAdminSession } from '@/lib/admin-auth';
 
 export async function requireAdmin() {
-  const user = await getChatGPTUser();
-  if (!user) throw new Error('UNAUTHENTICATED');
-  const allowed = (process.env.ADMIN_EMAILS ?? '').split(',').map((value) => value.trim().toLowerCase()).filter(Boolean);
-  const isLocalAdmin = process.env.NODE_ENV !== 'production' && user.email.endsWith('@sites.test');
-  if (!isLocalAdmin && !allowed.includes(user.email.toLowerCase())) throw new Error('FORBIDDEN');
-  return user;
+  if (!await hasAdminSession()) throw new Error('UNAUTHENTICATED');
+  return true;
 }
 
 export function adminErrorResponse(error: unknown) {

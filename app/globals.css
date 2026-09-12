@@ -107,6 +107,15 @@ img { display: block; max-width: 100%; }
 .reviews-strip article > div > span { color: var(--muted); font-family: var(--font-editorial), serif; }
 .reviews-strip blockquote { font-family: var(--font-editorial), serif; font-size: 23px; line-height: 1.25; margin: 30px 0; }
 .reviews-strip article > div > p { color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.orders-proof { display: grid; gap: clamp(45px, 7vw, 110px); grid-template-columns: .7fr 1.3fr; padding: clamp(100px, 12vw, 180px) clamp(24px, 7vw, 112px); }
+.orders-proof .section-heading { align-self: center; }
+.orders-proof .section-heading h2 { font-size: clamp(50px, 6vw, 90px); }
+.orders-proof .section-heading h2 em { color: var(--accent); font-weight: 400; }
+.orders-proof .section-heading > p:last-child { color: var(--muted); line-height: 1.7; margin-top: 32px; max-width: 430px; }
+.orders-gallery { display: grid; gap: 12px; grid-template-columns: repeat(3, 1fr); }
+.orders-gallery figure { margin: 0; overflow: hidden; }
+.orders-gallery figure:first-child, .orders-gallery figure:last-child { margin-top: 80px; }
+.orders-gallery img { filter: saturate(.82); height: 100%; max-height: 720px; object-fit: cover; width: 100%; }
 .about-teaser { background: var(--paper-deep); display: grid; grid-template-columns: .85fr 1.15fr; min-height: 760px; }
 .about-portrait { margin: 62px 0 62px 62px; overflow: hidden; }
 .about-portrait img { filter: saturate(.65); height: 100%; object-fit: cover; width: 100%; }
@@ -251,6 +260,17 @@ img { display: block; max-width: 100%; }
 .admin-editor-head { align-items: center; border-bottom: 1px solid #ddd7cd; display: flex; justify-content: space-between; margin-bottom: 25px; padding-bottom: 18px; }
 .admin-editor-head h2 { font-family: var(--font-editorial), serif; font-size: 30px; font-weight: 500; margin: 0; }
 .admin-form-grid { display: grid; gap: 22px 28px; grid-template-columns: 1fr 1fr; }
+.admin-login { align-items: center; background: var(--paper-deep); display: flex; justify-content: center; min-height: 100svh; padding: 28px; }
+.admin-login > section { max-width: 520px; width: 100%; }
+.admin-login h1 { font-family: var(--font-editorial), serif; font-size: clamp(62px, 8vw, 108px); font-weight: 400; letter-spacing: -.05em; line-height: .86; margin: 18px 0 30px; }
+.admin-login > section > p:not(.eyebrow) { color: var(--muted); line-height: 1.7; margin: 0 0 40px; }
+.admin-login form { display: grid; gap: 22px; }
+.admin-login label { display: grid; gap: 8px; }
+.admin-login label span { color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.admin-login input { background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); font: inherit; min-height: 48px; outline: 0; }
+.admin-login input:focus { border-color: var(--ink); }
+.admin-login .admin-button { justify-content: center; margin-top: 12px; }
+.admin-login-error { color: #a6382c; font-size: 14px; margin: 0; }
 .admin-wide { grid-column: 1 / -1; }
 .admin-dropzone { align-items: center; border: 1px dashed #afa89d; cursor: pointer; display: flex; gap: 12px; justify-content: center; margin-top: 28px; min-height: 105px; position: relative; }
 .admin-dropzone input { inset: 0; opacity: 0; position: absolute; }
@@ -283,6 +303,9 @@ img { display: block; max-width: 100%; }
   .search-callout h2 { margin-bottom: 50px; }
   .reviews-strip { grid-template-columns: 1fr; }
   .reviews-strip article:nth-child(n) { margin-top: 40px; }
+  .orders-proof { grid-template-columns: 1fr; }
+  .orders-gallery { gap: 8px; }
+  .orders-gallery figure:first-child, .orders-gallery figure:last-child { margin-top: 45px; }
   .about-teaser { grid-template-columns: 1fr; min-height: 0; }
   .about-portrait { aspect-ratio: 4 / 5; margin: 22px; }
   .about-copy { padding: 65px 22px 85px; }

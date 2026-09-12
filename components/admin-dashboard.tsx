@@ -1,6 +1,6 @@
 'use client';
 
-import { Archive, ExternalLink, ImagePlus, Inbox, LayoutDashboard, LogOut, MessageSquareText, Plus, Save, Settings, Trash2, UserRound } from 'lucide-react';
+import { Archive, ExternalLink, ImagePlus, Inbox, LayoutDashboard, LogOut, Plus, Save, Settings, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
@@ -11,18 +11,26 @@ type AdminReview = { id?: string; image: string; text: string; customerName?: st
 type AdminData = { items: AdminItem[]; requests: AdminRequest[]; reviews: AdminReview[]; settings: Record<string, string> };
 
 const blankItem: AdminItem = { brand: '', name: '', category: 'Одежда', description: '', price: '', sizes: [], color: '', status: 'check', images: [], published: false, sortOrder: 0 };
-const blankReview: AdminReview = { image: '', text: '', customerName: '', date: '', type: 'review', published: false, sortOrder: 0 };
 const requestLabels: Record<string, string> = { new: 'Новый', working: 'В работе', found: 'Найдено', complete: 'Завершено', cancelled: 'Отменено' };
+
+function getMoscowGreeting() {
+  const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Moscow', hour: '2-digit', hourCycle: 'h23' }).format(new Date()));
+  if (hour < 5) return 'Доброй ночи';
+  if (hour < 12) return 'Доброе утро';
+  if (hour < 18) return 'Добрый день';
+  return 'Добрый вечер';
+}
 
 export function AdminDashboard({ email, signOutPath }: { email: string; signOutPath: string }) {
   const [data, setData] = useState<AdminData>({ items: [], requests: [], reviews: [], settings: {} });
   const [item, setItem] = useState<AdminItem | null>(null);
-  const [review, setReview] = useState<AdminReview | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
+  const [greeting, setGreeting] = useState(getMoscowGreeting);
 
   const load = useCallback(async () => { const response = await fetch('/api/admin/data'); if (response.ok) setData(await response.json() as AdminData); }, []);
   useEffect(() => { void load(); }, [load]);
+  useEffect(() => { const timer = window.setInterval(() => setGreeting(getMoscowGreeting()), 60_000); return () => window.clearInterval(timer); }, []);
 
   const action = async (payload: Record<string, unknown>) => {
     setBusy(true); setNotice('');
@@ -41,7 +49,6 @@ export function AdminDashboard({ email, signOutPath }: { email: string; signOutP
   };
 
   const saveItem = async () => { if (!item) return; if (await action({ action: 'saveItem', item })) setItem(null); };
-  const saveReview = async () => { if (!review) return; if (await action({ action: 'saveReview', review })) setReview(null); };
   const saveSettings = async () => { await action({ action: 'saveSettings', settings: data.settings }); };
 
   return (
@@ -52,18 +59,14 @@ export function AdminDashboard({ email, signOutPath }: { email: string; signOutP
           <TabsTrigger value="home"><LayoutDashboard />Главная</TabsTrigger>
           <TabsTrigger value="finds"><Archive />Мои находки</TabsTrigger>
           <TabsTrigger value="requests"><Inbox />Запросы</TabsTrigger>
-          <TabsTrigger value="reviews"><MessageSquareText />Отзывы и заказы</TabsTrigger>
-          <TabsTrigger value="about"><UserRound />Обо мне</TabsTrigger>
           <TabsTrigger value="contacts"><Settings />Контакты</TabsTrigger>
           <TabsTrigger value="settings"><Settings />Настройки</TabsTrigger>
         </TabsList>
         <div className="admin-workspace">
           {notice && <div className="admin-notice" role="status">{notice}</div>}
-          <TabsContent value="home"><AdminTitle eyebrow="ОБЗОР" title="Добрый день, Зохра" description="Здесь собраны заявки и всё, что опубликовано на сайте." /><div className="admin-stats"><article><span>{data.requests.filter((entry) => entry.status === 'new').length}</span><p>Новых запросов</p></article><article><span>{data.items.filter((entry) => entry.published).length}</span><p>Опубликовано находок</p></article><article><span>{data.reviews.filter((entry) => entry.published).length}</span><p>Историй на сайте</p></article></div><section className="admin-panel"><h2>Последние запросы</h2><RequestTable entries={data.requests.slice(0, 5)} onStatus={(id, status) => action({ action: 'setRequestStatus', id, status })} /></section></TabsContent>
+          <TabsContent value="home"><AdminTitle eyebrow="ОБЗОР" title={`${greeting}, Зохра`} description="Здесь собраны заявки и всё, что опубликовано на сайте." /><div className="admin-stats"><article><span>{data.requests.filter((entry) => entry.status === 'new').length}</span><p>Новых запросов</p></article><article><span>{data.items.filter((entry) => entry.published).length}</span><p>Опубликовано находок</p></article><article><span>{data.reviews.filter((entry) => entry.published).length}</span><p>Историй на сайте</p></article></div><section className="admin-panel"><h2>Последние запросы</h2><RequestTable entries={data.requests.slice(0, 5)} onStatus={(id, status) => action({ action: 'setRequestStatus', id, status })} /></section></TabsContent>
           <TabsContent value="finds"><AdminTitle eyebrow="КОНТЕНТ" title="Мои находки" description="Добавляйте вещи, выбирайте раздел и управляйте публикацией." action={<button className="admin-button" onClick={() => setItem({ ...blankItem, sortOrder: data.items.length + 1 })}><Plus />Добавить находку</button>} />{item && <ItemEditor value={item} busy={busy} onChange={setItem} onCancel={() => setItem(null)} onSave={saveItem} onUpload={upload} />}<div className="admin-list">{data.items.map((entry) => <article key={entry.id}><img src={entry.images[0] || 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=300&q=75'} alt="" /><div><p>{entry.brand}</p><h3>{entry.name}</h3><span>{entry.category || 'Другое'} · {entry.published ? 'Опубликовано' : 'Скрыто'} · #{entry.sortOrder}</span></div><div className="admin-row-actions"><button onClick={() => setItem(entry)}>Изменить</button><button className="danger" onClick={() => action({ action: 'deleteItem', id: entry.id })}><Trash2 /></button></div></article>)}</div></TabsContent>
           <TabsContent value="requests"><AdminTitle eyebrow="КЛИЕНТЫ" title="Запросы" description="Меняйте статус, чтобы видеть, на каком этапе находится каждый поиск." /><section className="admin-panel"><RequestTable entries={data.requests} onStatus={(id, status) => action({ action: 'setRequestStatus', id, status })} /></section></TabsContent>
-          <TabsContent value="reviews"><AdminTitle eyebrow="СОЦИАЛЬНОЕ ДОКАЗАТЕЛЬСТВО" title="Отзывы и заказы" description="Публикуйте отзывы, скриншоты и фотографии доставленных заказов." action={<button className="admin-button" onClick={() => setReview({ ...blankReview, sortOrder: data.reviews.length + 1 })}><Plus />Добавить историю</button>} />{review && <ReviewEditor value={review} busy={busy} onChange={setReview} onCancel={() => setReview(null)} onSave={saveReview} onUpload={upload} />}<div className="admin-list">{data.reviews.map((entry) => <article key={entry.id}><img src={entry.image || 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=300&q=75'} alt="" /><div><p>{entry.type === 'review' ? 'Отзыв' : 'Заказ'}</p><h3>{entry.text}</h3><span>{entry.published ? 'Опубликовано' : 'Скрыто'} · {entry.customerName}</span></div><div className="admin-row-actions"><button onClick={() => setReview(entry)}>Изменить</button><button className="danger" onClick={() => action({ action: 'deleteReview', id: entry.id })}><Trash2 /></button></div></article>)}</div></TabsContent>
-          <TabsContent value="about"><AdminTitle eyebrow="ТЕКСТЫ" title="Обо мне" description="Редактируйте ключевые тексты без изменения структуры страницы." /><SettingsEditor settings={data.settings} keys={[['about_intro', 'Вступление'], ['selection_philosophy', 'Что я выбираю'], ['brands', 'Какие бренды ищу'], ['buying_sources', 'Где покупаю'], ['authenticity', 'Как проверяю оригинальность'], ['order_process', 'Как работаю с заказами']]} onChange={(settings) => setData({ ...data, settings })} onSave={saveSettings} busy={busy} /></TabsContent>
           <TabsContent value="contacts"><AdminTitle eyebrow="СВЯЗЬ" title="Контакты" description="Эти данные используются в кнопках и формах по всему сайту." /><SettingsEditor settings={data.settings} keys={[['whatsapp', 'WhatsApp'], ['telegram', 'Telegram'], ['instagram', 'Instagram'], ['email', 'Email'], ['phone', 'Телефон']]} onChange={(settings) => setData({ ...data, settings })} onSave={saveSettings} busy={busy} /></TabsContent>
           <TabsContent value="settings"><AdminTitle eyebrow="СИСТЕМА" title="Настройки" description="Основная подпись и служебные параметры сайта." /><SettingsEditor settings={data.settings} keys={[['site_tagline', 'Короткая подпись'], ['request_reply_time', 'Срок ответа'], ['notice', 'Сообщение для клиентов']]} onChange={(settings) => setData({ ...data, settings })} onSave={saveSettings} busy={busy} /></TabsContent>
         </div>
