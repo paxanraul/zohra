@@ -360,13 +360,31 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 720px) {
-  .finds-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .product-card-copy { min-height: 96px; }
-  .product-dialog { max-height: calc(100svh - 24px); max-width: calc(100vw - 24px) !important; }
-  .product-dialog-image { aspect-ratio: 1 / 1; }
+  .page-intro { padding: 52px 18px 42px; }
+  .page-intro .eyebrow { margin-bottom: 18px; }
+  .page-intro h1 { font-size: clamp(50px, 16vw, 66px); margin-bottom: 22px; }
+  .page-intro > p:last-child { font-size: 14px; line-height: 1.65; margin-top: 0; }
+  .find-categories { padding: 0 16px; }
+  .find-categories button { font-size: 12px; padding: 18px 16px 17px; }
+  .find-categories button::after { left: 16px; right: 16px; }
+  .find-categories button:first-child::after { left: 0; }
+  .finds-list { gap: 30px 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 28px 14px 82px; }
+  .product-card-image img { aspect-ratio: 3 / 4; }
+  .product-card-copy { min-height: 82px; padding: 11px 2px 12px; }
+  .product-card-category { font-size: 11px; letter-spacing: .1em; margin-bottom: 6px; }
+  .product-card-title { font-size: 17px; line-height: 1.12; }
+  .product-dialog { height: 100svh; max-height: 100svh; max-width: 100vw !important; width: 100vw; }
+  .product-dialog-image { aspect-ratio: auto; height: 42svh; min-height: 280px; }
+  .product-dialog-copy { align-self: start; padding: 32px 20px 44px; }
+  .product-dialog-copy .eyebrow { margin-bottom: 16px; }
+  .product-dialog-title { font-size: clamp(42px, 13vw, 58px) !important; }
+  .product-dialog-name { font-size: 24px; margin: 10px 0 22px; }
+  .product-dialog-description { font-size: 14px !important; }
+  .product-dialog-details { margin: 26px 0; }
+  .product-dialog-close { align-items: center; border-radius: 50%; height: 42px; justify-content: center; padding: 0; right: 12px; top: 12px; width: 42px; }
+  .product-dialog-close span { height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 }
 
 @media (max-width: 460px) {
-  .finds-list { grid-template-columns: 1fr; }
-  .product-card-title { font-size: 24px; }
+  .product-card-title { font-size: 16px; }
 }
