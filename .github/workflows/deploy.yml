@@ -38,6 +38,9 @@ jobs:
       - name: Prepare paths for GitHub Pages
         run: node scripts/prepare-github-pages.mjs
 
+      - name: Disable Jekyll processing
+        run: touch dist/client/.nojekyll
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
