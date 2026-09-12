@@ -1,4 +1,4 @@
-import { readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const outputDirectory = join(process.cwd(), 'dist', 'client');
@@ -22,8 +22,15 @@ for (const file of await htmlFiles(outputDirectory)) {
   let html = await readFile(file, 'utf8');
   for (const route of staticRoutes) {
     const escapedRoute = route.replace('/', '\\/');
-    html = html.replace(new RegExp(`(href|src)="/${escapedRoute}(?=[?\"#])`, 'g'), `$1="${repositoryPath}/${route}.html`);
+    html = html.replace(new RegExp(`(href|src)="/${escapedRoute}(?=[?/\"#])`, 'g'), `$1="${repositoryPath}/${route}/`);
   }
   html = html.replace(/(href|src)="\/(?!zohra\/)/g, `$1="${repositoryPath}/`);
   await writeFile(file, html);
+}
+
+for (const route of staticRoutes) {
+  const source = join(outputDirectory, `${route}.html`);
+  const destination = join(outputDirectory, route);
+  await mkdir(destination, { recursive: true });
+  await copyFile(source, join(destination, 'index.html'));
 }

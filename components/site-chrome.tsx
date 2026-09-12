@@ -3,23 +3,24 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { defaultContacts } from '@/lib/content';
+import { siteRoute } from '@/lib/site-path';
 
 const links = [
-  { href: '/', label: 'Главная' },
-  { href: '/finds', label: 'Мои находки' },
-  { href: '/request', label: 'Найду для вас' },
-  { href: '/about', label: 'Обо мне' },
+  { href: siteRoute('/'), label: 'Главная' },
+  { href: siteRoute('/finds'), label: 'Мои находки' },
+  { href: siteRoute('/request'), label: 'Найду для вас' },
+  { href: siteRoute('/about'), label: 'Обо мне' },
 ];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header">
-      <a className="brand-lockup" href="/" aria-label="Зохра — на главную"><strong>ЗОХРА</strong><span>PERSONAL SHOPPER / BUYER</span></a>
+      <a className="brand-lockup" href={siteRoute('/')} aria-label="Зохра — на главную"><strong>ЗОХРА</strong><span>PERSONAL SHOPPER / BUYER</span></a>
       <nav className="desktop-nav" aria-label="Основная навигация">{links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}</nav>
-      <a className="nav-cta" href="/request">Оставить запрос</a>
+      <a className="nav-cta" href={siteRoute('/request')}>Оставить запрос</a>
       <button className="menu-button" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Закрыть меню' : 'Открыть меню'}>{open ? <X /> : <Menu />}</button>
-      {open && <nav className="mobile-menu" id="mobile-menu" aria-label="Мобильная навигация">{links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}<a className="button button-dark" href="/request">Оставить запрос</a></nav>}
+      {open && <nav className="mobile-menu" id="mobile-menu" aria-label="Мобильная навигация">{links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}<a className="button button-dark" href={siteRoute('/request')}>Оставить запрос</a></nav>}
     </header>
   );
 }
