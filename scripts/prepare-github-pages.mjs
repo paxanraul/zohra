@@ -1,9 +1,12 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const outputDirectory = join(process.cwd(), 'dist', 'client');
 const repositoryPath = '/zohra';
 const staticRoutes = ['about', 'finds', 'request', 'reviews', 'admin', 'admin/login'];
+
+await rename(join(outputDirectory, 'zohra', '_next'), join(outputDirectory, '_next'));
+await rm(join(outputDirectory, 'zohra'), { recursive: true, force: true });
 
 async function htmlFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
