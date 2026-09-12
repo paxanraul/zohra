@@ -3,7 +3,7 @@ import { SiteFooter, SiteHeader } from '@/components/site-chrome';
 import { statusLabels } from '@/lib/content';
 import { getPublishedFinds } from '@/lib/data';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = process.env.GITHUB_PAGES === 'true' ? 'force-static' : 'force-dynamic';
 
 export default async function Home() {
   const finds = await getPublishedFinds();

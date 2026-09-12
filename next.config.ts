@@ -1,5 +1,7 @@
-import type { NextConfig } from 'next';
+const isGitHubPages = process.env.GITHUB_PAGES === 'true';
 
-const nextConfig: NextConfig = {};
-
-export default nextConfig;
+export default {
+  output: isGitHubPages ? 'export' : undefined,
+  assetPrefix: isGitHubPages ? '/zohra' : '',
+  trailingSlash: false,
+};
